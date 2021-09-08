@@ -1,0 +1,178 @@
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <h1 class="fw-light">Mi Album de fotos</h1>
+      <p class="lead text-muted">Agrear una nueva foto al album.</p>
+      <div class="input-group-append">
+        <label for="nombre_asign">Descripción&nbsp;&nbsp;</label>
+        <textarea
+          class="form-control"
+          id="nombre_asign"
+          name="nombre_asign"
+          [(ngModel)]="fotoSeleccionada.descripcion"
+        ></textarea>
+        &nbsp;&nbsp;
+        <button
+          type="button"
+          class="btn-info btn-sm"
+          (click)="fileInput.click()"
+        >
+          <span>+</span>
+          <input
+            type="file"
+            name="fotico"
+            style="display: none"
+            #fileInput
+            (change)="seleccionarFoto($event)"
+            accept="image/x-png,image/jpeg,image/gif"
+          />
+        </button>
+        &nbsp;
+        <p *ngIf="fotoSeleccionada.id == 0; then codigoCrear"></p>
+        <ng-template #codigoCrear>
+          <button class="btn btn-success" (click)="procesarFoto()">
+            Crear
+          </button>
+        </ng-template>
+      </div>
+      <div class="text-right mt-3 img-thumbnail">
+        <img
+          [src]="fotoSeleccionada.fotoBase64"
+          alt="Foto refundida"
+          style="height: 225px; width: 100%"
+          onerror="this.src='../../assets/img/no-image.png';"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div
+        class="col"
+        *ngFor="let objFoto of fotoArreglo"
+        [class.active]="objFoto == fotoSeleccionada"
+      >
+        <div class="card shadow-sm">
+          <img
+            [src]="objFoto.fotoBase64"
+            alt="Foto refundida"
+            style="height: 225px; width: 100%"
+            onerror="this.src='../../assets/img/no-image.png';"
+          />
+
+
+          <div class="card-body">
+            <p class="card-text text-truncate">{{ objFoto.descripcion }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="
+                    abrirModalActulizar(modaActualizarConfirmar, objFoto)
+                  "
+                >
+                  Actualizar
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="abrirModalEliminar(modalEliminarConfirmar, objFoto)"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Plantilla para ventana modal -->
+<ng-template #modalEliminarConfirmar>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ modalTitulo }}</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <img
+      [src]="fotoSeleccionada.fotoBase64"
+      alt="Foto refundida"
+      style="height: 225; width: 100%"
+      onerror="this.src='../../assets/img/no-image.png';"
+    />
+    {{ modalTexto }}<br /><strong>{{ modalContenido }}</strong>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cancelar()">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-danger" (click)="eliminar()">
+      Eliminar
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #modaActualizarConfirmar>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ modalTitulo }}</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modalRef.hide()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <img
+      [src]="fotoSeleccionada.fotoBase64"
+      alt="Foto refundida"
+      style="height: 225; width: 100%"
+      onerror="this.src='../../assets/img/no-image.png';"
+    />
+    &nbsp;&nbsp;
+    <div class="input-group-append">
+      <textarea
+        class="form-control"
+        id="nombre_asign"
+        name="nombre_asign"
+        [(ngModel)]="fotoSeleccionada.descripcion"
+      ></textarea>
+      &nbsp;&nbsp;
+      <button type="button" class="btn-info btn-sm" (click)="fileInput.click()">
+        <span>+</span>
+        <input
+          type="file"
+          name="fotico"
+          style="display: none"
+          #fileInput
+          (change)="seleccionarFoto($event)"
+        />
+      </button>
+    </div>
+    <br/>
+    {{ modalTexto }}<br /><strong>{{ modalContenido }}</strong>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cancelar()">
+      Cancelar
+    </button>
+    <button type="button" class="btn btn-info" (click)="procesarFoto()">
+      Actualizar
+    </button>
+  </div>
+</ng-template>
